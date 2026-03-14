@@ -293,7 +293,7 @@
   "Avatar component for displaying user profile images.
    See https://daisyui.com/components/avatar/"
   [{::keys [size status]
-    :keys [src alt inner-class class]:as props} children]
+    :keys [src alt inner-class class] :as props} children]
   (let [avatar-class (cn :avatar class props
                          (avatar-status->cls status))
         img-class (cn (avatar-size->cls size) inner-class)]
@@ -344,3 +344,296 @@
     [:span (-> (dissoc props ::variant ::color ::size :class)
                (assoc :class badge-class))
      children]))
+
+;; Select
+
+(def select-color->cls
+  {::neutral :select-neutral
+   ::primary :select-primary
+   ::secondary :select-secondary
+   ::accent :select-accent
+   ::info :select-info
+   ::success :select-success
+   ::warning :select-warning
+   ::error :select-error})
+
+(def select-variant->cls
+  {::ghost :select-ghost})
+
+(def select-size->cls
+  {::xs :select-xs
+   ::sm :select-sm
+   ::md :select-md
+   ::lg :select-lg
+   ::xl :select-xl})
+
+(defn- select-classes
+  [{::keys [size color variant] :as attrs}]
+  (cn :select (:class attrs)
+      (select-size->cls size)
+      (select-color->cls color)
+      (select-variant->cls variant)))
+
+(defalias select
+  "Select component for dropdown selection.
+   See https://daisyui.com/components/select/"
+  [{::keys [disabled?] :as attrs} children]
+  (let [rest (dissoc attrs :class ::size ::color ::variant ::disabled?)
+        classes (select-classes attrs)]
+    [:select (cond-> (assoc rest :class classes)
+               disabled? (assoc :disabled true))
+     children]))
+
+;; Textarea
+
+(def textarea-color->cls
+  {::neutral :textarea-neutral
+   ::primary :textarea-primary
+   ::secondary :textarea-secondary
+   ::accent :textarea-accent
+   ::info :textarea-info
+   ::success :textarea-success
+   ::warning :textarea-warning
+   ::error :textarea-error})
+
+(def textarea-variant->cls
+  {::ghost :textarea-ghost})
+
+(def textarea-size->cls
+  {::xs :textarea-xs
+   ::sm :textarea-sm
+   ::md :textarea-md
+   ::lg :textarea-lg
+   ::xl :textarea-xl})
+
+(defn- textarea-classes
+  [{::keys [size color variant] :as attrs}]
+  (cn :textarea (:class attrs)
+      (textarea-size->cls size)
+      (textarea-color->cls color)
+      (textarea-variant->cls variant)))
+
+(defalias textarea
+  "Textarea component for multi-line text input.
+   See https://daisyui.com/components/textarea/"
+  [{::keys [disabled?] :as attrs} children]
+  (let [rest (dissoc attrs :class ::size ::color ::variant ::disabled?)
+        classes (textarea-classes attrs)]
+    [:textarea (cond-> (assoc rest :class classes)
+                 disabled? (assoc :disabled true))
+     children]))
+
+;; Card
+
+(def card-variant->cls
+  {::bordered :card-bordered
+   ::dash :card-dash
+   ::compact :card-compact})
+
+(def card-side->cls
+  {::side :card-side})
+
+(defalias card
+  "Card component for grouped content.
+   See https://daisyui.com/components/card/"
+  [{::keys [variant side image-full?] :as attrs} children]
+  (let [classes (cn :card (:class attrs)
+                    (card-variant->cls variant)
+                    (card-side->cls side)
+                    (when image-full? :image-full))]
+    [:div (-> (dissoc attrs ::variant ::side ::image-full? :class)
+              (assoc :class classes))
+     children]))
+
+(defalias card-body
+  "Card body content container."
+  [attrs children]
+  [:div (assoc attrs :class (cn :card-body (:class attrs)))
+   children])
+
+(defalias card-title
+  "Card title element."
+  [attrs children]
+  [:h2 (assoc attrs :class (cn :card-title (:class attrs)))
+   children])
+
+(defalias card-actions
+  "Card actions container (typically for buttons)."
+  [attrs children]
+  [:div (assoc attrs :class (cn :card-actions (:class attrs)))
+   children])
+
+;; Alert
+
+(def alert-color->cls
+  {::info :alert-info
+   ::success :alert-success
+   ::warning :alert-warning
+   ::error :alert-error})
+
+(def alert-variant->cls
+  {::soft :alert-soft
+   ::dash :alert-dash
+   ::outline :alert-outline})
+
+(defalias alert
+  "Alert component for feedback messages.
+   See https://daisyui.com/components/alert/"
+  [{::keys [color variant] :as attrs} children]
+  (let [classes (cn :alert (:class attrs)
+                    (alert-color->cls color)
+                    (alert-variant->cls variant))]
+    [:div (-> (dissoc attrs ::color ::variant :class)
+              (assoc :class classes :role "alert"))
+     children]))
+
+;; Tabs
+
+(def tab-variant->cls
+  {::bordered :tabs-bordered
+   ::lifted :tabs-lifted
+   ::boxed :tabs-boxed})
+
+(def tab-size->cls
+  {::xs :tabs-xs
+   ::sm :tabs-sm
+   ::md :tabs-md
+   ::lg :tabs-lg})
+
+(defalias tabs
+  "Tab container component.
+   See https://daisyui.com/components/tab/"
+  [{::keys [variant size] :as attrs} children]
+  (let [classes (cn :tabs (:class attrs)
+                    (tab-variant->cls variant)
+                    (tab-size->cls size))]
+    [:div (-> (dissoc attrs ::variant ::size :class)
+              (assoc :class classes :role "tablist"))
+     children]))
+
+(defalias tab
+  "Individual tab element. Use ::active? to mark the active tab."
+  [{::keys [active? disabled?] :as attrs} children]
+  (let [classes (cn :tab (:class attrs)
+                    (when active? :tab-active)
+                    (when disabled? :tab-disabled))]
+    [:a (-> (dissoc attrs ::active? ::disabled? :class)
+            (assoc :class classes :role "tab"))
+     children]))
+
+(defalias tab-content
+  "Tab content panel. Paired with a tab element."
+  [attrs children]
+  [:div (assoc attrs :class (cn :tab-content (:class attrs)) :role "tabpanel")
+   children])
+
+;; Range (slider)
+
+(def range-color->cls
+  {::primary :range-primary
+   ::secondary :range-secondary
+   ::accent :range-accent
+   ::info :range-info
+   ::success :range-success
+   ::warning :range-warning
+   ::error :range-error})
+
+(def range-size->cls
+  {::xs :range-xs
+   ::sm :range-sm
+   ::md :range-md
+   ::lg :range-lg})
+
+(defalias range-input
+  "Range/slider input component.
+   See https://daisyui.com/components/range/"
+  [{::keys [size color] :as attrs} _]
+  (let [classes (cn :range (:class attrs)
+                    (range-size->cls size)
+                    (range-color->cls color))]
+    [:input (-> (dissoc attrs ::size ::color :class)
+                (assoc :class classes :type "range"))]))
+
+;; Stat
+
+(defalias stat-group
+  "Container for stat items. Displays stats side by side.
+   See https://daisyui.com/components/stat/"
+  [attrs children]
+  [:div (assoc attrs :class (cn :stats (:class attrs)))
+   children])
+
+(defalias stat
+  "Individual stat item within a stat-group."
+  [attrs children]
+  [:div (assoc attrs :class (cn :stat (:class attrs)))
+   children])
+
+(defalias stat-title
+  "Stat title/label."
+  [attrs children]
+  [:div (assoc attrs :class (cn :stat-title (:class attrs)))
+   children])
+
+(defalias stat-value
+  "Stat primary value."
+  [{::keys [color] :as attrs} children]
+  (let [classes (cn :stat-value (:class attrs)
+                    (color->text-color-cls color))]
+    [:div (-> (dissoc attrs ::color :class) (assoc :class classes))
+     children]))
+
+(defalias stat-desc
+  "Stat description/secondary text."
+  [attrs children]
+  [:div (assoc attrs :class (cn :stat-desc (:class attrs)))
+   children])
+
+;; ─── Pure render functions ───────────────────────────────────────
+;; These can be called from .cljc resolvers without defalias expansion.
+;; They produce the same hiccup as the defalias versions but are plain
+;; functions, not alias-registered components.
+
+(defn render-badge
+  "Pure function: badge hiccup. Callable from .cljc resolvers."
+  [{::keys [variant color size] :as props} children]
+  (let [badge-class (cn :badge (:class props)
+                        (badge-color->cls color)
+                        (badge-variant->cls variant)
+                        (badge-size->cls size))]
+    [:span (-> (dissoc props ::variant ::color ::size :class)
+               (assoc :class badge-class))
+     children]))
+
+(defn render-card
+  "Pure function: card hiccup. Callable from .cljc resolvers."
+  [{::keys [variant side image-full?] :as attrs} children]
+  (let [classes (cn :card (:class attrs)
+                    (card-variant->cls variant)
+                    (card-side->cls side)
+                    (when image-full? :image-full))]
+    [:div (-> (dissoc attrs ::variant ::side ::image-full? :class)
+              (assoc :class classes))
+     children]))
+
+(defn render-alert
+  "Pure function: alert hiccup. Callable from .cljc resolvers."
+  [{::keys [color variant] :as attrs} children]
+  (let [classes (cn :alert (:class attrs)
+                    (alert-color->cls color)
+                    (alert-variant->cls variant))]
+    [:div (-> (dissoc attrs ::color ::variant :class)
+              (assoc :class classes :role "alert"))
+     children]))
+
+(defn render-loading
+  "Pure function: loading spinner hiccup. Callable from .cljc resolvers."
+  [{::keys [size variant color]
+    :as attrs
+    :or {size ::md variant ::spinner}} _]
+  (let [classes (cn :loading (:class attrs)
+                    (size->loading-cls size)
+                    (color->text-color-cls color)
+                    (loading-variant->cls variant))]
+    [:span (merge {:class classes}
+                  (dissoc attrs ::size ::variant ::color))]))
